@@ -58,9 +58,9 @@
       dataValue: {
         "default": null
       },
-      appendToBody: {
-        type: Boolean,
-        "default": false
+      container: {
+        type: String,
+        "default": ''
       },
       visibleArrow: {
         type: Boolean,
@@ -135,7 +135,7 @@
     },
     created: function created() {
       this.appendedArrow = false;
-      this.appendedToBody = false;
+      this.appendedToContainer = false;
       this.popperOptions = Object.assign(this.popperOptions, this.options);
     },
     mounted: function mounted() {
@@ -200,9 +200,10 @@
           this.popperJS = null;
         }
 
-        if (this.appendedToBody) {
-          this.appendedToBody = false;
-          document.body.removeChild(this.popper.parentElement);
+        if (this.appendedToContainer) {
+          this.appendedToContainer = false;
+          var container = document.querySelector(this.container);
+          container.removeChild(this.popper.parentElement);
         }
       },
       createPopper: function createPopper() {
@@ -213,9 +214,10 @@
             _this.appendArrow(_this.popper);
           }
 
-          if (_this.appendToBody && !_this.appendedToBody) {
-            _this.appendedToBody = true;
-            document.body.appendChild(_this.popper.parentElement);
+          if (_this.container && !_this.appendedToContainer) {
+            _this.appendedToContainer = true;
+            var container = document.querySelector(_this.container);
+            container.appendChild(_this.popper.parentElement);
           }
 
           if (_this.popperJS && _this.popperJS.destroy) {

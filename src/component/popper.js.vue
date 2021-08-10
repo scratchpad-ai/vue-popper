@@ -150,7 +150,7 @@
       },
       container: {
         type: String,
-        default: false
+        default: ''
       },
       visibleArrow: {
         type: Boolean,

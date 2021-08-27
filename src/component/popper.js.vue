@@ -232,8 +232,8 @@
     },
 
     mounted() {
-      this.referenceElm = this.reference || this.getSlotElement(this.$slots.reference);
-      this.popper = this.getSlotElement(this.$slots.default);
+      this.referenceElm = this.reference || this.getSlotElement('reference');
+      this.popper = this.getSlotElement('default');
 
       switch (this.trigger) {
         case 'clickToOpen':
@@ -261,9 +261,10 @@
     },
 
     methods: {
-      getSlotElement (slot) {
+      getSlotElement (slotName) {
+        const slot = this.$slots[slotName];
         if (!slot || !slot[0]) {
-          throw new Error('reference slot is not provided');
+          throw new Error(`${slotName} slot is not provided`);
         }
         return slot[0].elm || (slot[0].context && slot[0].context.$el);
       },

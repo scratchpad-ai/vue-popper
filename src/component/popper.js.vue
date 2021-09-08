@@ -88,12 +88,15 @@
         <slot>{{ content }}</slot>
       </span>
     </transition>
-    <slot name="reference"></slot>
+    <slot-wrapper ref="reference">
+      <slot name="reference" />
+    </slot-wrapper>
   </component>
 </template>
 
 <script>
   import Popper from 'popper.js';
+  import SlotWrapper from './slotWrapper.js';
 
   function on(element, event, handler) {
     if (element && event && handler) {
@@ -108,6 +111,10 @@
   }
 
   export default {
+    components: {
+      SlotWrapper,
+    },
+
     props: {
       tagName: {
         type: String,
@@ -232,7 +239,10 @@
     },
 
     mounted() {
-      this.referenceElm = this.reference || this.$slots.reference[0].elm;
+      this.referenceElm = this.reference || this.$refs.reference.$el;
+      if (!this.referenceElm) {
+        throw new Error('reference is not defined')
+      }
       this.popper = this.$slots.default[0].elm;
 
       switch (this.trigger) {

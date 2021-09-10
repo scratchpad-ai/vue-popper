@@ -88,12 +88,15 @@
         <slot>{{ content }}</slot>
       </span>
     </transition>
-    <slot name="reference"></slot>
+    <slot-wrapper ref="reference">
+      <slot name="reference" />
+    </slot-wrapper>
   </component>
 </template>
 
 <script>
   import Popper from 'popper.js';
+  import SlotWrapper from './slotWrapper.js';
 
   function on(element, event, handler) {
     if (element && event && handler) {
@@ -108,6 +111,10 @@
   }
 
   export default {
+    components: {
+      SlotWrapper,
+    },
+
     props: {
       tagName: {
         type: String,
@@ -232,8 +239,11 @@
     },
 
     mounted() {
-      this.referenceElm = this.reference || this.getSlotElement('reference');
-      this.popper = this.getSlotElement('default');
+      this.referenceElm = this.reference || this.$refs.reference.$el;
+      if (!this.referenceElm) {
+        throw new Error('reference is not defined')
+      }
+      this.popper = this.$slots.default[0].elm;
 
       switch (this.trigger) {
         case 'clickToOpen':
@@ -261,14 +271,6 @@
     },
 
     methods: {
-      getSlotElement (slotName) {
-        const slot = this.$slots[slotName];
-        if (!slot || !slot[0]) {
-          throw new Error(`${slotName} slot is not provided`);
-        }
-        return slot[0].elm || (slot[0].context && slot[0].context.$el);
-      },
-
       doToggle(event) {
         if(this.stopPropagation) {
           event.stopPropagation();

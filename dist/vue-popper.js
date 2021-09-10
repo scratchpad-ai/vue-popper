@@ -6,6 +6,13 @@
 
   Popper = Popper && Popper.hasOwnProperty('default') ? Popper['default'] : Popper;
 
+  var SlotWrapper = {
+    name: 'SlotWrapper',
+    render: function render() {
+      return this.$slots["default"];
+    }
+  };
+
   //
 
   function on(element, event, handler) {
@@ -21,6 +28,9 @@
   }
 
   var script = {
+    components: {
+      SlotWrapper: SlotWrapper
+    },
     props: {
       tagName: {
         type: String,
@@ -139,8 +149,13 @@
       this.popperOptions = Object.assign(this.popperOptions, this.options);
     },
     mounted: function mounted() {
-      this.referenceElm = this.reference || this.getSlotElement('reference');
-      this.popper = this.getSlotElement('default');
+      this.referenceElm = this.reference || this.$refs.reference.$el;
+
+      if (!this.referenceElm) {
+        throw new Error('reference is not defined');
+      }
+
+      this.popper = this.$slots["default"][0].elm;
 
       switch (this.trigger) {
         case 'clickToOpen':
@@ -171,15 +186,6 @@
       }
     },
     methods: {
-      getSlotElement: function getSlotElement(slotName) {
-        var slot = this.$slots[slotName];
-
-        if (!slot || !slot[0]) {
-          throw new Error("".concat(slotName, " slot is not provided"));
-        }
-
-        return slot[0].elm || slot[0].context && slot[0].context.$el;
-      },
       doToggle: function doToggle(event) {
         if (this.stopPropagation) {
           event.stopPropagation();
@@ -447,9 +453,9 @@
           ]
         ),
         _vm._v(" "),
-        _vm._t("reference")
+        _c("slot-wrapper", { ref: "reference" }, [_vm._t("reference")], 2)
       ],
-      2
+      1
     )
   };
   var __vue_staticRenderFns__ = [];

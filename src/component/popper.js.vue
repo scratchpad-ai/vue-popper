@@ -306,7 +306,9 @@
         if (this.appendedToContainer) {
           this.appendedToContainer = false;
           const container = document.querySelector(this.container);
-          container.removeChild(this.popper.parentElement);
+          if (container) {
+            container.removeChild(this.popper.parentElement);
+          }
         }
       },
 
@@ -317,9 +319,11 @@
           }
 
           if (this.container && !this.appendedToContainer) {
-            this.appendedToContainer = true;
             const container = document.querySelector(this.container);
-            container.appendChild(this.popper.parentElement);
+            if (container) {
+              container.appendChild(this.popper.parentElement);
+              this.appendedToContainer = true;
+            }
           }
 
           if (this.popperJS && this.popperJS.destroy) {

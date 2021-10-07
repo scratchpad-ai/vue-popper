@@ -218,7 +218,10 @@
         if (this.appendedToContainer) {
           this.appendedToContainer = false;
           var container = document.querySelector(this.container);
-          container.removeChild(this.popper.parentElement);
+
+          if (container) {
+            container.removeChild(this.popper.parentElement);
+          }
         }
       },
       createPopper: function createPopper() {
@@ -230,9 +233,12 @@
           }
 
           if (_this.container && !_this.appendedToContainer) {
-            _this.appendedToContainer = true;
             var container = document.querySelector(_this.container);
-            container.appendChild(_this.popper.parentElement);
+
+            if (container) {
+              container.appendChild(_this.popper.parentElement);
+              _this.appendedToContainer = true;
+            }
           }
 
           if (_this.popperJS && _this.popperJS.destroy) {
